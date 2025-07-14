@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Recipe</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/index.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+  <div class="logo">
+    <a href="/">🍽️ RecipeHub</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/my-recipes">My Recipes</a></li>
+    <li><a href="/orders">My Orders</a></li>
+    <li><a href="/about">About</a></li>
+
+    <% if (isAuthenticated) { %>
+   
+      <li><a href="/logout">Logout</a></li>
+    <% } else { %>
+      <li><a href="/login">Login</a></li>     
+    <% } %>
+  </ul>
+</nav>
+
+ <main class="page-content">
+
+<form method="GET" action="/" class="filters">
+  <input type="text" class="search-input"  id="searchInput" name="search" placeholder="Search recipes..." value="<%= searchQuery %>" />
+  <select class="category-select" id="recipeList" name="category">
+      <option value="" <%= selectedCategory === '' ? 'selected' : '' %>>All Categories</option>
+    <option value="Breakfast" <%= selectedCategory === 'Breakfast' ? 'selected' : '' %>>Breakfast</option>
+    <option value="Lunch" <%= selectedCategory === 'Lunch' ? 'selected' : '' %>>Lunch</option>
+    <option value="Snacks" <%= selectedCategory === 'Snacks' ? 'selected' : '' %>>Snacks</option>
+    <option value="Dinner" <%= selectedCategory === 'Dinner' ? 'selected' : '' %>>Dinner</option>
+    <option value="Desserts" <%= selectedCategory === 'Desserts' ? 'selected' : '' %>>Desserts</option>
+  </select>
+
+  <select class="sort-select" name="sort">
+     <option value="" <%= selectedSort === '' ? 'selected' : '' %>>Sort by</option>
+    <option value="asc" <%= selectedSort === 'asc' ? 'selected' : '' %>>Price: Low to High</option>
+    <option value="desc" <%= selectedSort === 'desc' ? 'selected' : '' %>>Price: High to Low</option>
+  </select>
+
+  <button id="apply-button" type="submit">Apply</button>
+</form>
+
+<% if (user) { %>
+  <div id="welcomeToast" class="toast">Hi <%= user.name %> 👋</div>
+<% } %>
+
+<% if (recipes.length > 0) { %>
+<div class="recipe-list">
+  <ul id="search-results">
+    <% recipes.forEach(recipe => { %>
+      <li class="li-space">
+       <img src="/uploads/<%= recipe.image %>" alt="<%= recipe.title %>" class="recipe-image">
+        <a href="#" class="recipe-view-title"><%= recipe.title %></a>
+        <h2 class="price">$<%= recipe.price %></h2>
+        <a href="/recipe/<%= recipe._id %>" class="recipe-view-title">View More</a>
+      
+         <!-- Add to Order button -->
+        <form action="/order/<%= recipe._id %>" method="POST">
+            <button class="order-button" type="submit">Add to Order</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+ </div>
+<% } else if (showMessage) { %>
+  <p>Sorry, not available at this time.</p>
+<% } else { %>
+
+<div class="recipe-list">
+  <ul>
+    <% recipes.forEach(recipe => { %>
+      <li class="li-space">
+       <img src="/uploads/<%= recipe.image %>" alt="<%= recipe.title %>" class="recipe-image">
+        <a href="#" class="recipe-view-title"><%= recipe.title %></a>
+        <h2 class="price">$<%= recipe.price %></h2>
+        <a href="/recipe/<%= recipe._id %>" class="recipe-view-title">View More</a>
+      
+         <!-- Add to Order button -->
+        <form action="/order/<%= recipe._id %>" method="POST">
+            <button class="order-button" type="submit">Add to Order</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+ </div>
+<% } %>
+
+  <div class="pagination">
+  <% if (currentPage > 1) { %>
+    <a href="/?page=<%= currentPage - 1 %>">⬅ Prev</a>
+  <% } %>
+
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <a href="/?page=<%= i %>" class="<%= currentPage === i ? 'active' : '' %>">
+      <%= i %>
+    </a>
+  <% } %>
+
+  <% if (currentPage < totalPages) { %>
+    <a href="/?page=<%= currentPage + 1 %>">Next ➡</a>
+  <% } %>
+</div>
+
+</main>
+
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const resultsList = document.getElementById('search-results');
+  let timeoutId;
+
+  searchInput.addEventListener('input', function () {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      const query = this.value;
+
+      // ✅ Check if input is empty or only spaces
+      if (!query.trim()) {
+        window.location.href = '/';  // Redirect to show all recipes
+        return;
+      }
+
+      fetch(`/search?query=${encodeURIComponent(query.trim())}`)
+        .then(res => res.json())
+        .then(data => {
+          resultsList.innerHTML = '';
+
+          if (data.length === 0) {
+            resultsList.innerHTML = '<li>Sorry, not available at this time.</li>';
+          } else {
+            data.forEach(recipe => {
+              const li = document.createElement('li');
+              li.className = 'li-space';
+              li.innerHTML = `
+                <img src="/uploads/${recipe.image}" alt="${recipe.title}" class="recipe-image">
+                <a href="#" class="recipe-view-title">${recipe.title}</a>
+                <h2 class="price">$${recipe.price}</h2>
+                <a href="/recipe/${recipe._id}" class="recipe-view-title">View More</a>
+                <form action="/order/${recipe._id}" method="POST">
+                  <button class="order-button" type="submit">Add to Order</button>
+                </form>`;
+              resultsList.appendChild(li);
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          resultsList.innerHTML = '<li>Error fetching results</li>';
+        });
+    }, 1000);
+  });
+</script>
+
+
+
+<script>
+  window.addEventListener('load', () => {
+    const toast = document.getElementById('welcomeToast');
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 5000);
+    }
+  });
+</script>
+<script>
+  document.querySelector('.filters').addEventListener('submit', function (e) {
+    this.querySelectorAll('input, select').forEach(input => {
+      if (!input.value.trim()) {
+        input.removeAttribute('name');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

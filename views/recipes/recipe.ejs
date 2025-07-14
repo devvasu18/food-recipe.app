@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= recipe.title %> | RecipeHub</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/recipe.css" />
+</head>
+<body>
+
+
+<nav class="navbar">
+  <div class="logo">
+    <a href="/">🍽️ RecipeHub</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/my-recipes">My Recipes</a></li>
+    <li><a href="/orders">My Orders</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+
+  <div class="recipe-details">
+    <h1><%= recipe.title %></h1>
+
+    <div class="section">
+      <h3>Ingredients</h3>
+      <p><%= recipe.ingredients.join(', ') %></p>
+    </div>
+
+    <div class="section">
+      <h3>Steps</h3>
+      <p><%= recipe.steps %></p>
+    </div>
+  </div>
+
+</body>
+</html>

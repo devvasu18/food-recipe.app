@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Recipe</title>
+  <link rel="stylesheet" href="/myrecipe.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+ <nav class="navbar">
+  <div class="logo">
+    <a href="/">🍽️ RecipeHub</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/my-recipes">My Recipes</a></li>
+    <li><a href="/orders">My Orders</a></li>
+    <li><a href="/about">About</a></li>
+
+    <% if (isAuthenticated) { %>
+      <li><a href="/logout">Logout</a></li>
+    <% } else { %>
+      <li><a href="/login">Login</a></li>     
+    <% } %>
+  </ul>
+</nav>
+
+<main class="page-content">
+  <div class="add-recipe">
+<h1>My Recipes</h1>
+<a href="/add" class="add-button">➕ Add New Recipe</a>
+</div>
+<div class="recipes">
+  <% if (recipes.length === 0) { %>
+    <p>No recipes added yet.</p>
+  <% } %>
+
+  <% recipes.forEach(recipe => { %>
+    <div class="recipe-card">
+<img src="/uploads/<%= recipe.image %>" alt="<%= recipe.title %>" class="recipe-image">
+
+
+  <div class="recipe-details">
+    <h2><%= recipe.title %></h2>
+    <p><strong>Price:</strong> ₹<%= recipe.price %></p>
+    <a href="/recipe/<%= recipe._id %>" class="recipe-view-title">View More</a>
+    <div class="recipe-actions">
+       <button onclick="location.href='/recipes/edit/<%= recipe._id %>'" class="edit-btn">Edit</button>
+      <form action="/delete/<%= recipe._id %>" method="POST" onsubmit="return confirm('Are you sure?');">
+             
+        <button type="submit" class="delete-btn">Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
+  <% }); %>
+</div>
+</body>
+</html>

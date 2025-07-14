@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Recipe</title>
+  <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/orders.css" />
+
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">
+    <a href="/">🍽️ RecipeHub</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/my-recipes">My Recipes</a></li>
+    <li><a href="/orders">My Orders</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+
+  <main class="page-content">
+
+
+<h1>Your Orders</h1>
+
+<% if (orders.length > 0) { %>
+  <% orders.forEach(order => { %>
+    <div class="recipe-card">
+     <img src="/uploads/<%= order.recipe.image %>" alt="<%= order.recipe.title %>" class="order-recipe-image">
+      <h2><%= order.recipe.title %></h2>
+      <p>Price: $<%= order.recipe.price %></p>
+      <p>Ingredients: <%= order.recipe.ingredients.join(', ') %></p>
+       <form action="/order/delete/<%= order._id %>" method="POST" style="margin-top: 1rem;">
+        <button class="remove-button" type="submit">Remove</button>
+      </form>
+
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>No orders yet. Add a recipe to your order.</p>
+<% } %>
+
+</main>
+
+</body>
+</html>
