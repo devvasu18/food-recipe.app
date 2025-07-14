@@ -10,12 +10,22 @@
   <div class="logo">
     <a href="/">🍽️ RecipeHub</a>
   </div>
-  <ul class="nav-links">
-    <li><a href="/">Home</a></li>
+ <ul class="nav-links">
+  <li><a href="/">Home</a></li>
+
+  <% if (isAuthenticated) { %>
     <li><a href="/my-recipes">My Recipes</a></li>
     <li><a href="/orders">My Orders</a></li>
-    <li><a href="/about">About</a></li>
-  </ul>
+  <% } %>
+
+  <li><a href="/about">About</a></li>
+
+  <% if (isAuthenticated) { %>
+    <li><a href="/logout">Logout</a></li>
+  <% } else { %>
+    <li><a href="/login">Login</a></li>
+  <% } %>
+</ul>
 </nav>
 <main class="page-content">
   <h1>Add New Recipe</h1>

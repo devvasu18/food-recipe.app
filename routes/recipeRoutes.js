@@ -39,6 +39,7 @@ const hasFilter = (search?.trim() || category?.trim() || sort?.trim()) ? true : 
     recipes,
     currentPage: page,
     totalPages,
+    totalRecipes,
     searchQuery: search || '',
     selectedCategory: category || '',
     selectedSort: sort || '',
