@@ -79,8 +79,7 @@ router.get('/recipes/:id', async (req, res) => {
     const userRating = userId
       ? recipe.ratings.find(r => r.userId?.toString() === userId)
       : null;
-console.log('User ID:', req.session.userId);
-console.log('User rating on this recipe:', userRating?.value);
+
 
     res.render('recipes/detail', {
       recipe: {
@@ -93,6 +92,34 @@ console.log('User rating on this recipe:', userRating?.value);
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
+  }
+});
+
+router.post('/recipes/:id/review', isAuthenticated, async (req, res) => {
+  const { content} = req.body;
+  const userId = req.session.userId;
+
+  if (!content) {
+    return res.json({ success: false, message: 'Content and rating required' });
+  }
+
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ success: false, message: 'Recipe not found' });
+
+    recipe.reviews.push({
+      userId,
+      userName: res.locals.user.name,
+      content,
+   
+    });
+
+    await recipe.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Internal error' });
   }
 });
 

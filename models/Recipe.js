@@ -9,6 +9,15 @@ const recipeSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     value: Number
   }],
+  reviews: [
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    userName: String, // So you don't have to query User model again
+    content: String,
+    rating: Number,
+    createdAt: { type: Date, default: Date.now }
+  }
+],
   steps: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

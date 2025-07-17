@@ -46,28 +46,37 @@
       <p><strong>Ingredients:</strong> <%= recipe.ingredients %></p>
       <p><strong>Steps:</strong> <%= recipe.steps %></p>
 
-      <div class="rating-stars">
-        <% for (let i = 1; i <= 5; i++) { %>
-          <i class="fa-solid fa-star<%= i <= Math.round(avgRating) ? '' : '-regular' %>"></i>
-        <% } %>
-        <span>(<%= avgRating %> Avg)</span>
-      </div>
-
-      <form action="/order/<%= recipe._id %>" method="POST">
-        <button class="order-button" type="submit">Add to Order</button>
-      </form>
-
-      <form action="/rate/<%= recipe._id %>" method="POST" class="rating-form">
-        <input type="hidden" name="rating" id="ratingValue" required>
-        <div class="star-container">
-          <% for (let i = 1; i <= 5; i++) { %>
-            <i class="fa-regular fa-star star" data-value="<%= i %>"></i>
-          <% } %>
-        </div>
-      </form>
+  <!-- Rating Section -->
+  <form class="rating-form" data-recipe-id="<%= recipe._id %>">
+    <input type="hidden" class="rating-value" value="<%= recipe.userRating || '' %>">
+    <div class="star-container">
+      <% for (let i = 1; i <= 5; i++) { %>
+        <i class="fa-star <%= recipe.userRating && i <= recipe.userRating ? 'fa-solid active' : 'fa-regular' %> star"
+           data-value="<%= i %>"></i>
+      <% } %>
+      <span class="avg-rating">(<%= recipe.avgRating %>)</span>
     </div>
-  </div>
-</main>
+  </form>
+
+  <!-- Reviews Section -->
+  <h2>Reviews</h2>
+
+  <% recipe.reviews.forEach(review => { %>
+    <div class="review-card">
+      <strong><%= review.userName %></strong>  
+      <p><%= review.content %></p>
+      <small>Rating: <%= review.rating %>/5</small>
+    </div>
+  <% }) %>
+ <% if (isAuthenticated) { %>
+    <form id="review-form">
+      <textarea name="content" placeholder="Write your review..." required></textarea>
+     
+      <button type="submit">Submit Review</button>
+    </form>
+  <% } else { %>
+    <p>Please <a href="/login">login</a> to add a review.</p>
+  <% } %>
 
   <footer>
     <div class="footer-content">
@@ -101,6 +110,40 @@
     });
   });
 </script>
+ <script>
+  const reviewForm = document.getElementById('review-form');
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const content = reviewForm.content.value.trim();
+      const recipeId = "<%= recipe._id %>";
+
+      if (!content) {
+        alert("Please write a review.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/recipes/${recipeId}/review`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })  // Only sending content
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          location.reload();
+        } else {
+          alert(result.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error submitting review');
+      }
+    });
+  }
+</script>
+
 
 </body>
 </html>
