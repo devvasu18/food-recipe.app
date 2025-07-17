@@ -1,0 +1,89 @@
+.detail-hero {
+  position: relative;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-hero-content h1 {
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.detail-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.detail-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.detail-info {
+  flex: 1;
+}
+
+.detail-info h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.detail-info p {
+  margin-bottom: 15px;
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rating-stars i {
+  color: gold;
+  margin-right: 5px;
+}
+
+.star-container {
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.star-container .star {
+  font-size: 1.8rem;
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+.star-container .star.active {
+  color: gold;
+}
+
+.order-button {
+  padding: 10px 20px;
+  border: none;
+  background: #002147;
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.order-button:hover {
+  background: #800020;
+}

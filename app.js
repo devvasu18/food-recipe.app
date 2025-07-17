@@ -15,6 +15,7 @@ const app = express();
 // ✅ View engine setup
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
+app.use(express.json());
 app.set('views', path.join(__dirname, 'views'));
 
 // ✅ Static files and form data parsing
@@ -38,8 +39,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'defaultsecret',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl })
+  store: MongoStore.create({ mongoUrl }),
 }));
+
 
 // ✅ Global middleware to pass auth info to views
 app.use((req, res, next) => {

@@ -13,16 +13,18 @@ exports.postSignup = async (req, res) => {
   const { email, password, name } = req.body;
 
   try {
-    await User.create({ email, password, name });
-    res.redirect('/login');
-  } catch (err) {
-    if (err.code === 11000) {
-      // Duplicate email error
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
       return res.render('auth/signup', {
         errors: [{ msg: 'Email already exists' }],
         oldInput: req.body
       });
     }
+
+    await User.create({ email, password, name });
+    res.redirect('/login');
+  } catch (err) {
     console.error(err);
     res.send('Something went wrong');
   }

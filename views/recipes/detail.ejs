@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= recipe.title %> - FoodHub</title>
+  <link rel="stylesheet" href="/detail.css" />
+  <link rel="stylesheet" href="/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+      <a href="/">🍽️ FoodHub</a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <% if (isAuthenticated) { %>
+        <li><a href="/my-recipes">My Recipes</a></li>
+        <li><a href="/orders">My Orders</a></li>
+      <% } %>
+      <li><a href="/about">About</a></li>
+      <% if (isAuthenticated) { %>
+        <li><a href="/logout">Logout</a></li>
+      <% } else { %>
+        <li><a href="/login">Login</a></li>
+      <% } %>
+    </ul>
+  </nav>
+
+<main class="page-content">
+  <section class="detail-hero">
+    <div class="detail-hero-overlay"></div>
+    <div class="detail-hero-content">
+      <h1><%= recipe.title %></h1>
+    </div>
+  </section>
+
+  <div class="detail-container">
+    <div class="detail-image">
+      <img src="/uploads/<%= recipe.image %>" alt="<%= recipe.title %>">
+    </div>
+
+    <div class="detail-info">
+      <h2>Price: $<%= recipe.price %></h2>
+      <p><strong>Ingredients:</strong> <%= recipe.ingredients %></p>
+      <p><strong>Steps:</strong> <%= recipe.steps %></p>
+
+      <div class="rating-stars">
+        <% for (let i = 1; i <= 5; i++) { %>
+          <i class="fa-solid fa-star<%= i <= Math.round(avgRating) ? '' : '-regular' %>"></i>
+        <% } %>
+        <span>(<%= avgRating %> Avg)</span>
+      </div>
+
+      <form action="/order/<%= recipe._id %>" method="POST">
+        <button class="order-button" type="submit">Add to Order</button>
+      </form>
+
+      <form action="/rate/<%= recipe._id %>" method="POST" class="rating-form">
+        <input type="hidden" name="rating" id="ratingValue" required>
+        <div class="star-container">
+          <% for (let i = 1; i <= 5; i++) { %>
+            <i class="fa-regular fa-star star" data-value="<%= i %>"></i>
+          <% } %>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+  <footer>
+    <div class="footer-content">
+      <h3>FoodHub</h3>
+      <p>Elevating your dining experience with royal elegance since 2024.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-pinterest"></i></a>
+      </div>
+      <p class="copyright">© 2024 FoodHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+<script>
+  const stars = document.querySelectorAll('.star');
+  const ratingInput = document.getElementById('ratingValue');
+  const ratingForm = document.querySelector('.rating-form');
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const rating = star.getAttribute('data-value');
+      ratingInput.value = rating;
+
+      stars.forEach(s => {
+        s.classList.toggle('active', s.getAttribute('data-value') <= rating);
+      });
+
+      ratingForm.submit();
+    });
+  });
+</script>
+
+</body>
+</html>
