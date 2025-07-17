@@ -9,6 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const authRoutes = require('./routes/authRoutes');
+const User = require('./models/User');
 
 const app = express();
 
@@ -44,15 +45,25 @@ app.use(session({
 
 
 // ✅ Global middleware to pass auth info to views
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.isAuthenticated = !!req.session.userId;
   res.locals.currentUserId = req.session.userId || null;
+
+  if (req.session.userId) {
+    try {
+      const user = await User.findById(req.session.userId).select('name');
+      res.locals.user = user;
+    } catch (err) {
+      console.error('Error fetching user for res.locals:', err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+
   next();
 });
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
-  next();
-});
+
 
 
 

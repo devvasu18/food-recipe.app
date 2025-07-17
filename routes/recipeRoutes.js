@@ -70,42 +70,32 @@ router.get('/recipes/:id', async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).send('Recipe not found');
+
     const avgRating = recipe.ratings.length
       ? recipe.ratings.reduce((sum, r) => sum + r.value, 0) / recipe.ratings.length
       : 0;
-    const userRating = req.session.user
-      ? recipe.ratings.find(r => r.userId?.toString() === req.session.user._id?.toString())
+
+    const userId = req.session.userId;
+    const userRating = userId
+      ? recipe.ratings.find(r => r.userId?.toString() === userId)
       : null;
+console.log('User ID:', req.session.userId);
+console.log('User rating on this recipe:', userRating?.value);
+
     res.render('recipes/detail', {
       recipe: {
         ...recipe.toObject(),
         avgRating: avgRating.toFixed(1),
         userRating: userRating?.value || null
-      },
-      user: req.session.user || null
+      }
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal server error');
   }
-  const userId = req.session.user?._id?.toString();
-
-const recipesWithRatings = recipes.map(recipe => {
-  const userRating = userId
-    ? recipe.ratings.find(r => r.userId?.toString() === userId)
-    : null;
-
-  const avgRating = recipe.ratings.length
-    ? recipe.ratings.reduce((sum, r) => sum + r.value, 0) / recipe.ratings.length
-    : 0;
-
-  return {
-    ...recipe.toObject(),
-    avgRating: avgRating.toFixed(1),
-    userRating: userRating?.value || null
-  };
 });
-});
+
 
 // Add new recipe page
 router.get('/add', isAuthenticated, controller.getAddPage);
@@ -143,46 +133,37 @@ router.post('/rate/:id', isAuthenticated, async (req, res) => {
   const parsedRating = parseInt(rating);
 
   if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-
     return res.status(400).json({ message: 'Invalid rating value' });
   }
 
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) {
-
       return res.status(404).json({ message: 'Recipe not found' });
     }
 
-    const userIdStr = req.session.user?._id?.toString();
-    if (!userIdStr) {
-
+    const userId = req.session.userId;
+    if (!userId) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
 
-
-
-    const existingRating = recipe.ratings.find(r => r.userId?.toString() === userIdStr);
+    const existingRating = recipe.ratings.find(r => r.userId?.toString() === userId);
 
     if (existingRating) {
-
       existingRating.value = parsedRating;
     } else {
-
-      recipe.ratings.push({ userId: req.session.user._id, value: parsedRating });
+      recipe.ratings.push({ userId, value: parsedRating });
     }
 
     await recipe.save();
 
-    const validRatings = recipe.ratings.filter(r => r.userId && typeof r.value === 'number' && !isNaN(r.value));
+    const validRatings = recipe.ratings.filter(r => r.userId && typeof r.value === 'number');
     const avgRating = validRatings.length
       ? validRatings.reduce((sum, r) => sum + r.value, 0) / validRatings.length
       : 0;
 
- 
-
     res.json({
-      message: 'Rating saved',
+      message: existingRating ? 'Already rated' : 'Rating saved',
       avgRating: avgRating.toFixed(1),
       userRating: parsedRating
     });
@@ -192,6 +173,7 @@ router.post('/rate/:id', isAuthenticated, async (req, res) => {
     res.status(500).json({ message: 'Internal error' });
   }
 });
+
 
 
 // Orders

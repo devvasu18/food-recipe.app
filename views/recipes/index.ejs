@@ -173,15 +173,13 @@ document.querySelectorAll('.rating-form').forEach(form => {
                 const data = await response.json();
 
                 if (data.message === 'Rating saved') {
-                    alert('Rating submitted!');
                     ratingValue.value = value;
 
                     // ✅ Update average rating dynamically
                     if (avgRatingElement && data.avgRating) {
                         avgRatingElement.textContent = `(${data.avgRating})`;
                     }
-                } else if (data.message === 'Already rated') {
-                    alert('Rating updated!');
+                } else if (data.message === 'Already rated') {                  
                     ratingValue.value = value;
 
                     if (avgRatingElement && data.avgRating) {
