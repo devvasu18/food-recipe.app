@@ -87,3 +87,30 @@
 .order-button:hover {
   background: #800020;
 }
+ 
+    /* Footer */
+    footer {
+      background: #0A2342;
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    footer h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #D4AF37;
+      margin-bottom: 1.5rem;
+    }
+    
+    footer p {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }

@@ -4,6 +4,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   background: #f8f5f2;
   color: #333;
+ 
 }
 
 /* Navbar Styles */
@@ -18,6 +19,7 @@ body {
   justify-content: space-between;
   align-items: center;
 }
+
 
 .logo a {
   font-family: 'Playfair Display', serif;
@@ -137,3 +139,36 @@ body {
     grid-template-columns: 1fr;
   }
 }
+ 
+    /* Footer */
+footer {
+  background: #0A2342;
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+ position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+
+}
+
+.footer-content {
+  max-width: 600px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    footer h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #D4AF37;
+      margin-bottom: 1.5rem;
+    }
+    
+    footer p {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }

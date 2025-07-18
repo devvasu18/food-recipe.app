@@ -10,23 +10,23 @@
 <body>
 
 <nav class="navbar">
-    <div class="logo">
-      <a href="/">🍽️ FoodHub</a>
-    </div>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <% if (isAuthenticated) { %>
-        <li><a href="/my-recipes">My Recipes</a></li>
-        <li><a href="/orders">My Orders</a></li>
-      <% } %>
-      <li><a href="/about">About</a></li>
-      <% if (isAuthenticated) { %>
-        <li><a href="/logout">Logout</a></li>
-      <% } else { %>
-        <li><a href="/login">Login</a></li>
-      <% } %>
-    </ul>
-  </nav>
+  <div class="logo">
+    <a href="/">🍽️ FoodHub</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <% if (isAuthenticated) { %>
+      <li><a href="/my-recipes">My Recipes</a></li>
+      <li><a href="/orders">My Orders</a></li>
+    <% } %>
+    <li><a href="/about">About</a></li>
+    <% if (isAuthenticated) { %>
+      <li><a href="/logout">Logout</a></li>
+    <% } else { %>
+      <li><a href="/login">Login</a></li>
+    <% } %>
+  </ul>
+</nav>
 
 <main class="page-content">
   <section class="detail-hero">
@@ -46,74 +46,107 @@
       <p><strong>Ingredients:</strong> <%= recipe.ingredients %></p>
       <p><strong>Steps:</strong> <%= recipe.steps %></p>
 
-  <!-- Rating Section -->
-  <form class="rating-form" data-recipe-id="<%= recipe._id %>">
-    <input type="hidden" class="rating-value" value="<%= recipe.userRating || '' %>">
-    <div class="star-container">
-      <% for (let i = 1; i <= 5; i++) { %>
-        <i class="fa-star <%= recipe.userRating && i <= recipe.userRating ? 'fa-solid active' : 'fa-regular' %> star"
-           data-value="<%= i %>"></i>
+      <!-- Rating Section -->
+      <form class="rating-form" data-recipe-id="<%= recipe._id %>">
+        <input type="hidden" class="rating-value" value="<%= recipe.userRating || '' %>">
+        <div class="star-container">
+          <% for (let i = 1; i <= 5; i++) { %>
+            <i class="fa-star <%= recipe.userRating && i <= recipe.userRating ? 'fa-solid active' : 'fa-regular' %> star"
+               data-value="<%= i %>"></i>
+          <% } %>
+          <span class="avg-rating">(<%= recipe.avgRating %>)</span>
+        </div>
+      </form>
+
+      <!-- Reviews Section -->
+      <h2>Reviews</h2>
+
+      <% recipe.reviews.forEach(review => { %>
+        <div class="review-card">
+          <strong><%= review.userName %> ~</strong>  
+          <p><%= review.content %></p>
+        </div>
+      <% }) %>
+
+      <% if (isAuthenticated) { %>
+        <form id="review-form">
+          <textarea name="content" placeholder="Write your review..." required></textarea>
+          <button type="submit">Submit Review</button>
+        </form>
+      <% } else { %>
+        <p>Please <a href="/login">login</a> to add a review.</p>
       <% } %>
-      <span class="avg-rating">(<%= recipe.avgRating %>)</span>
-    </div>
-  </form>
-
-  <!-- Reviews Section -->
-  <h2>Reviews</h2>
-
-  <% recipe.reviews.forEach(review => { %>
-    <div class="review-card">
-      <strong><%= review.userName %></strong>  
-      <p><%= review.content %></p>
 
     </div>
-  <% }) %>
- <% if (isAuthenticated) { %>
-    <form id="review-form">
-      <textarea name="content" placeholder="Write your review..." required></textarea>
-     
-      <button type="submit">Submit Review</button>
-    </form>
-  <% } else { %>
-    <p>Please <a href="/login">login</a> to add a review.</p>
-  <% } %>
+  </div>
 
-  <footer>
-    <div class="footer-content">
-      <h3>FoodHub</h3>
-      <p>Elevating your dining experience with royal elegance since 2024.</p>
-      <div class="social-links">
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-pinterest"></i></a>
-      </div>
-      <p class="copyright">© 2024 FoodHub. All rights reserved.</p>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <h3>FoodHub</h3>
+    <p>Elevating your dining experience with royal elegance since 2024.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-pinterest"></i></a>
     </div>
-  </footer>
+    <p class="copyright">© 2024 FoodHub. All rights reserved.</p>
+  </div>
+</footer>
 
 <script>
-  const stars = document.querySelectorAll('.star');
-  const ratingInput = document.getElementById('ratingValue');
-  const ratingForm = document.querySelector('.rating-form');
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector(".rating-form");
+    const recipeId = form.dataset.recipeId;
+    const stars = form.querySelectorAll(".star");
+    const ratingValue = form.querySelector(".rating-value");
+    const avgRatingElement = form.querySelector(".avg-rating");
 
-  stars.forEach(star => {
-    star.addEventListener('click', () => {
-      const rating = star.getAttribute('data-value');
-      ratingInput.value = rating;
+    stars.forEach(star => {
+      star.addEventListener("click", async () => {
+        const value = star.dataset.value;
 
-      stars.forEach(s => {
-        s.classList.toggle('active', s.getAttribute('data-value') <= rating);
+        try {
+          const response = await fetch(`/rate/${recipeId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: value })
+          });
+
+          const data = await response.json();
+
+          if (data.message === "Rating saved" || data.message === "Already rated") {
+            ratingValue.value = value;
+
+            stars.forEach(s => {
+              s.classList.remove("active");
+              if (parseInt(s.dataset.value) <= value) {
+                s.classList.add("active");
+                s.classList.replace("fa-regular", "fa-solid");
+              } else {
+                s.classList.replace("fa-solid", "fa-regular");
+              }
+            });
+
+            if (avgRatingElement && data.avgRating) {
+              avgRatingElement.textContent = `(${data.avgRating})`;
+            }
+          }
+
+        } catch (error) {
+          console.error("Rating failed:", error);
+        }
       });
-
-      ratingForm.submit();
     });
   });
 </script>
- <script>
-  const reviewForm = document.getElementById('review-form');
+
+<script>
+  const reviewForm = document.getElementById("review-form");
   if (reviewForm) {
-    reviewForm.addEventListener('submit', async (e) => {
+    reviewForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const content = reviewForm.content.value.trim();
       const recipeId = "<%= recipe._id %>";
@@ -127,7 +160,7 @@
         const response = await fetch(`/recipes/${recipeId}/review`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content })  // Only sending content
+          body: JSON.stringify({ content })
         });
 
         const result = await response.json();
@@ -138,12 +171,11 @@
         }
       } catch (err) {
         console.error(err);
-        alert('Error submitting review');
+        alert("Error submitting review");
       }
     });
   }
 </script>
-
 
 </body>
 </html>
