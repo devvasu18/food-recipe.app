@@ -2,14 +2,16 @@ const Recipe = require('../models/Recipe');
 const Order = require('../models/Order');
 const User = require('../models/User');
 
-
 exports.getHome = async (req, res) => {
   const { q } = req.query;
   const page = parseInt(req.query.page) || 1;
   const limit = 5;
 
-  const query = q ? { title: { $regex: q, $options: 'i' } } : {};
+  const user = req.user || req.session.user; // Make sure user is defined!
 
+
+
+  const query = q ? { title: { $regex: q, $options: 'i' } } : {};
   const totalRecipes = await Recipe.countDocuments(query);
 
   const recipes = await Recipe.find(query)
@@ -21,10 +23,13 @@ exports.getHome = async (req, res) => {
     recipes,
     currentPage: page,
     totalPages: Math.ceil(totalRecipes / limit),
+    selectedCategory: req.query.category || '',
+    selectedSort: req.query.sort || '',
     searchQuery: q || "",
-    user: req.session.user // Pass user info to the template
+    user
   });
 };
+
 
 exports.getAddPage = (req, res) => {
   res.render('recipes/add', { title: 'Add Recipe' });
@@ -66,11 +71,35 @@ exports.postRecipe = async (req, res) => {
 };
 
 
+exports.getRecipes = async (req, res) => {
+  try {
+    const recipes = await Recipe.find();
+    const user = req.user || req.session.user;
+
+
+    res.render('recipes/index', {
+      recipes,
+      user,
+      searchQuery: req.query.search || '',
+      selectedCategory: req.query.category || '',
+      selectedSort: req.query.sort || '',
+      currentPage: 1,
+      totalPages: 1,
+      showPagination: false
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/');
+  }
+};
+
+
 
 exports.getRecipe = async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
-  res.render('recipes/recipe', { recipe });
+  const user = req.user;
 };
+
 
 exports.deleteRecipe = async (req, res) => {
   await Recipe.findByIdAndDelete(req.params.id);

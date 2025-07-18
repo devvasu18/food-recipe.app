@@ -66,11 +66,17 @@ app.use(async (req, res, next) => {
 
 
 
+app.use((req, res, next) => {
+  const user = req.user || req.session.user;
+  res.locals.user = user;
+  next();
+});
 
 
 // ✅ Routing
 app.use(authRoutes);
 app.use('/', recipeRoutes);
+
 
 // ✅ Start server
 const PORT = process.env.PORT || 3000;

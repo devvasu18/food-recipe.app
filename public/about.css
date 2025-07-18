@@ -1,28 +1,97 @@
-/* === About Page Styling === */
+/* Base Body Styles */
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: #f8f5f2;
+  color: #333;
+}
 
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(135deg, #0A2342 0%, #2C0A34 100%);
+  padding: 1.5rem 3rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo a {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #D4AF37;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  background: rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+}
+
+/* About Page Styles */
 .about {
-  max-width: 700px;
-  margin: 2rem auto;
+  max-width: 900px;
+  margin: 3rem auto;
   padding: 2rem;
-  background-color: #f8f8f8;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .about h1 {
-  text-align: center;
-  color: #333;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  color: #0A2342;
 }
 
 .about h2 {
-  margin-top: 1.8rem;
-  color: #555;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #800020;
 }
 
 .about p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #222;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
 }
- 
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+  .about {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}

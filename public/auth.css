@@ -1,65 +1,179 @@
-/* auth.css */
+/* Base Styles */
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #ffecd2, #fcb69f);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(120deg, #0A2342, #2C0A34);
+  overflow: hidden;
 }
 
+/* Navbar (shared) */
+.navbar {
+  background: linear-gradient(135deg, #0A2342 0%, #2C0A34 100%);
+  padding: 1.5rem 3rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo a {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #D4AF37;
+  text-decoration: none;
+}
+
+/* Auth Container */
 .auth-container {
-  background-color: white;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  width: 100%;
+  position: relative;
   max-width: 400px;
+  margin: 5rem auto;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   text-align: center;
 }
 
 .auth-container h1 {
-  margin-bottom: 25px;
-  font-size: 2rem;
-  color: #333;
+  color: #fff;
+  margin-bottom: 2rem;
+  font-family: 'Playfair Display', serif;
 }
 
+/* Form Inputs */
 .auth-form input {
-  display: block;
   width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  border: none;
   border-radius: 8px;
   font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
+.auth-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-form input:focus {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Submit Button */
 .auth-form button {
   width: 100%;
-  padding: 12px;
-  background-color: #ff7e5f;
+  padding: 1rem;
   border: none;
-  color: white;
   border-radius: 8px;
-  font-size: 1rem;
+  background: #D4AF37;
+  color: #0A2342;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .auth-form button:hover {
-  background-color: #eb6750;
+  background: #fff;
+  color: #0A2342;
+  transform: translateY(-3px);
 }
 
+/* Error Messages */
+.error-messages li {
+  margin-top: 0.5rem;
+}
+
+/* Footer */
 .auth-footer {
-  margin-top: 15px;
-  font-size: 0.95rem;
-  color: #555;
+  margin-top: 1.5rem;
+  color: #fff;
 }
 
 .auth-footer a {
-  color: #ff7e5f;
+  color: #D4AF37;
   text-decoration: none;
-  font-weight: bold;
+}
+
+/* Particle Animation Background */
+.particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: float 20s linear infinite;
+}
+
+.particle:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  top: 10%;
+  left: 20%;
+  animation-duration: 25s;
+}
+
+.particle:nth-child(2) {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  left: 10%;
+  animation-duration: 30s;
+}
+
+.particle:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  top: 80%;
+  left: 60%;
+  animation-duration: 20s;
+}
+
+.particle:nth-child(4) {
+  width: 50px;
+  height: 50px;
+  top: 30%;
+  left: 80%;
+  animation-duration: 35s;
+}
+
+.particle:nth-child(5) {
+  width: 30px;
+  height: 30px;
+  top: 60%;
+  left: 40%;
+  animation-duration: 28s;
+}
+#auth-input {
+  width: 92%;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-1000px) rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-container {
+    margin: 2rem 1rem;
+  }
 }

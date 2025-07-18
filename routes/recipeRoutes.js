@@ -3,8 +3,9 @@ const router = express.Router();
 const Recipe = require('../models/Recipe');
 const path = require('path');
 const controller = require('../controllers/recipeController');
-const { isAuthenticated } = require('../middlewares/auth');
 const upload = require('../middlewares/upload');
+
+const { isAuthenticated} = require('../middlewares/auth');
 
  function addUserRating(recipes, userId) {
   return recipes.map(recipe => {

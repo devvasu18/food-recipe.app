@@ -52,6 +52,13 @@
     </form>
 
   <section class="hero">
+       <div class="particle-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png" class="particle" alt="pizza">
+    <img src="https://cdn-icons-png.flaticon.com/512/590/590685.png" class="particle" alt="drink">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" class="particle" alt="snack">
+    <img src="https://cdn-icons-png.flaticon.com/512/2977/2977706.png" class="particle" alt="icecream">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046785.png" class="particle" alt="fries">
+  </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Gourmet Meals, Delivered Like Royalty</h1>
@@ -75,9 +82,7 @@
             <div class="recipe-content">
               <a href="/recipe/<%= recipe._id %>" class="recipe-title"><%= recipe.title %></a>
               <div class="price">$<%= recipe.price %></div>
-
-           
-
+             <div class="order-review-actions">
               <form action="/order/<%= recipe._id %>" method="POST">
                 <button class="order-button" type="submit">Add to Order</button>
               </form>
@@ -85,7 +90,7 @@
              <div class="rating-stars">
                 <button class="review-btn" data-recipe-id="<%= recipe._id %>">View/Add Review</button>
               </div>
-               
+               </div>
             </div>
           </li>
         <% }) %>
