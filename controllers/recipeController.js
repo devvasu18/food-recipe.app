@@ -1,5 +1,5 @@
 const Recipe = require('../models/Recipe');
-const Order = require('../models/Order');
+const Order = require('../models/order');
 const User = require('../models/User');
 
 exports.getHome = async (req, res) => {
